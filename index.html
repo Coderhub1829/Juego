@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    canvas {
+      border: 1px solid #000;
+    }
+  </style>
+  <title>Touch Paint</title>
+</head>
+<body>
+  <canvas id="touchCanvas" width="300" height="300"></canvas>
+
+  <script>
+    const canvas = document.getElementById('touchCanvas');
+    const context = canvas.getContext('2d');
+    let painting = false;
+
+    function startPainting() {
+      painting = true;
+    }
+
+    function stopPainting() {
+      painting = false;
+      context.beginPath();
+    }
+
+    function draw(event) {
+      if (!painting) return;
+
+      context.lineWidth = 5;
+      context.lineCap = 'round';
+      context.strokeStyle = '#FF0000'; // Color rojo
+
+      context.lineTo(event.touches[0].clientX - canvas.offsetLeft, event.touches[0].clientY - canvas.offsetTop);
+      context.stroke();
+      context.beginPath();
+      context.moveTo(event.touches[0].clientX - canvas.offsetLeft, event.touches[0].clientY - canvas.offsetTop);
+    }
+
+    canvas.addEventListener('touchstart', startPainting);
+    canvas.addEventListener('touchend', stopPainting);
+    canvas.addEventListener('touchmove', draw);
+  </script>
+</body>
+</html>
