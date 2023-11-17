@@ -95,6 +95,7 @@
      background: none;
      margin-bottom: ppx;
    }
+   
   </style>
 </head>
 <body>
@@ -103,8 +104,11 @@
   <button id="addBtn" onclick="enviar()">Agregar <i class="fas fa-plus"></i></button>
 
   <div id="notes-container"></div>
+  
 
-  <script>const boton = document.getElementById("addBtn");
+  <script>
+    const boton = document.getElementById("addBtn");
+let textocopiado = document.getElementById('textocopiado');
 
 function addNote() {
   const noteInput = document.getElementById('noteInput');
@@ -113,6 +117,26 @@ function addNote() {
   } else {
     boton.style.transform = "scale(1)";
   }
+}
+
+function addCopyListeners() {
+  const notes = document.querySelectorAll('.note');
+  notes.forEach(note => {
+    let tiempo;
+    note.addEventListener("touchstart", function(event) {
+      tiempo = setTimeout(function() {
+        const texto = note.querySelector('span').textContent;
+        navigator.vibrate(50);
+        navigator.clipboard.writeText(texto)
+          .then(() => console.log("Texto copiado al portapapeles"))
+          .catch(err => console.error('Error al copiar: ', err));
+      }, 2000);
+    });
+
+    note.addEventListener("touchend", function(event) {
+      clearTimeout(tiempo);
+    });
+  });
 }
 
 function enviar() {
@@ -148,20 +172,8 @@ function enviar() {
     boton.style.transform = "scale(0)";
     updateLocalStorage();
 
-    let tiempo;
-    note.addEventListener("touchstart", function(event) {
-      tiempo = setTimeout(function() {
-        const texto = noteText;
-        navigator.vibrate(50);
-        navigator.clipboard.writeText(texto)
-          .then(() => alert("¡Texto copiado!"))
-          .catch(err => console.error('Error al copiar: ', err));
-      }, 2000);
-    });
+    addCopyListeners(); // Volvemos a establecer los event listeners para copiar después de agregar una nueva nota
 
-    note.addEventListener("touchend", function(event) {
-      clearTimeout(tiempo);
-    });
   } else {
     console.log('Por favor, escribe una nota');
   }
@@ -181,7 +193,7 @@ document.addEventListener("DOMContentLoaded", function() {
   const storedNotes = JSON.parse(localStorage.getItem('notes'));
 
   if (storedNotes && storedNotes.length > 0) {
-    storedNotes.forEach(noteText => {
+    storedNotes.reverse().forEach(noteText => {
       const note = document.createElement('div');
       note.classList.add('note');
 
@@ -198,26 +210,16 @@ document.addEventListener("DOMContentLoaded", function() {
 
       note.appendChild(noteContent);
       note.appendChild(deleteBtn);
+
       notesContainer.insertBefore(note, notesContainer.firstChild);
-
-      let tiempo;
-      note.addEventListener("touchstart", function(event) {
-        tiempo = setTimeout(function() {
-          const texto = noteText;
-          navigator.vibrate(50);
-          navigator.clipboard.writeText(texto)
-            .then(() => alert("¡Texto copiado!"))
-            .catch(err => console.error('Error al copiar: ', err));
-        }, 2000);
-      });
-
-      note.addEventListener("touchend", function(event) {
-        clearTimeout(tiempo);
-      });
     });
+
+    addCopyListeners(); // Establecemos los event listeners para copiar después de cargar las notas
   }
 });
-</script>
+
+    
+  </script>
 </body>
 	</html>
-	  
+	
