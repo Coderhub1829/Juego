@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
+<html lang="en">
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1">  
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
     body {
@@ -102,116 +104,120 @@
 
   <div id="notes-container"></div>
 
-  <script>
-  const boton = document.getElementById("addBtn")
-    function addNote() {
-      const noteInput = document.getElementById('noteInput');
-      ;
-      if (noteInput.value.trim() === "") {
-        boton.style.transform = "scale(0)";
-      } else {
-        boton.style.transform = "scale(1)";
-      }
+  <script>const boton = document.getElementById("addBtn");
+
+function addNote() {
+  const noteInput = document.getElementById('noteInput');
+  if (noteInput.value.trim() === "") {
+    boton.style.transform = "scale(0)";
+  } else {
+    boton.style.transform = "scale(1)";
+  }
+}
+
+function enviar() {
+  const noteInput = document.getElementById('noteInput');
+  const notesContainer = document.getElementById('notes-container');
+  const noteText = noteInput.value;
+
+  if (noteText.trim() !== "") {
+    const note = document.createElement('div');
+    note.classList.add('note');
+
+    const noteContent = document.createElement('span');
+    noteContent.textContent = noteText;
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+    deleteBtn.classList.add('delete-btn');
+    deleteBtn.onclick = function () {
+      notesContainer.removeChild(note);
+      updateLocalStorage();
+    };
+
+    note.appendChild(noteContent);
+    note.appendChild(deleteBtn);
+
+    if (notesContainer.firstChild) {
+      notesContainer.insertBefore(note, notesContainer.firstChild);
+    } else {
+      notesContainer.appendChild(note);
     }
 
-    function enviar() {
-      const noteInput = document.getElementById('noteInput');
-      const notesContainer = document.getElementById('notes-container');
-      const noteText = noteInput.value;
+    noteInput.value = '';
+    boton.style.transform = "scale(0)";
+    updateLocalStorage();
 
-      if (noteText.trim() !== "") {
-        const note = document.createElement('div');
-        note.classList.add('note');
-
-        const noteContent = document.createElement('span');
-        noteContent.textContent = noteText;
-
-        const deleteBtn = document.createElement('button');
-        deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
-        deleteBtn.classList.add('delete-btn');
-        deleteBtn.onclick = function () {
-          notesContainer.removeChild(note);
-          updateLocalStorage();
-        };
-
-        note.appendChild(noteContent);
-        note.appendChild(deleteBtn);
-        
-        // Inserta la nueva nota al principio del contenedor
-        if (notesContainer.firstChild) {
-          notesContainer.insertBefore(note, notesContainer.firstChild);
-        } else {
-          notesContainer.appendChild(note);
-        }
-
-        noteInput.value = '';
-boton.style.transform = "scale(0)";
-        updateLocalStorage();
-        
-var tiempo;
-
-note.addEventListener("touchstart", function(event) {
-  
-  tiempo = setTimeout(function() {
-    const texto = noteText;
-    navigator.vibrate(50)
-    // Puedes cambiar este texto por el que necesites
-  navigator.clipboard.writeText(texto)
-    .then(() => alert("¡Texto copiado!"))
-    .catch(err => console.error('Error al copiar: ', err));
-
-
-
-
-  }, 2000); // 2000 milisegundos = 2 segundos
-});
-
-note.addEventListener("touchend", function(event) {
-  clearTimeout(tiempo);
-});
-
-        
-      } else {
-        console.log('Por favor, escribe una nota');
-      }
-    }
-
-    function updateLocalStorage() {
-      const notes = document.querySelectorAll('.note span');
-      const notesText = [];
-      notes.forEach(note => {
-        notesText.push(note.textContent);
-      });
-      localStorage.setItem('notes', JSON.stringify(notesText));
-    }
-
-    document.addEventListener("DOMContentLoaded", function() {
-      const notesContainer = document.getElementById('notes-container');
-      const storedNotes = JSON.parse(localStorage.getItem('notes'));
-
-      if (storedNotes && storedNotes.length > 0) {
-        storedNotes.forEach(noteText => {
-          const note = document.createElement('div');
-          note.classList.add('note');
-
-          const noteContent = document.createElement('span');
-          noteContent.textContent = noteText;
-
-          const deleteBtn = document.createElement('button');
-          deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
-          deleteBtn.classList.add('delete-btn');
-          deleteBtn.onclick = function () {
-            notesContainer.removeChild(note);
-            updateLocalStorage();
-          };
-
-          note.appendChild(noteContent);
-          note.appendChild(deleteBtn);
-          notesContainer.appendChild(note);
-        });
-      }
+    let tiempo;
+    note.addEventListener("touchstart", function(event) {
+      tiempo = setTimeout(function() {
+        const texto = noteText;
+        navigator.vibrate(50);
+        navigator.clipboard.writeText(texto)
+          .then(() => alert("¡Texto copiado!"))
+          .catch(err => console.error('Error al copiar: ', err));
+      }, 2000);
     });
-  </script>
+
+    note.addEventListener("touchend", function(event) {
+      clearTimeout(tiempo);
+    });
+  } else {
+    console.log('Por favor, escribe una nota');
+  }
+}
+
+function updateLocalStorage() {
+  const notes = document.querySelectorAll('.note span');
+  const notesText = [];
+  notes.forEach(note => {
+    notesText.push(note.textContent);
+  });
+  localStorage.setItem('notes', JSON.stringify(notesText));
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  const notesContainer = document.getElementById('notes-container');
+  const storedNotes = JSON.parse(localStorage.getItem('notes'));
+
+  if (storedNotes && storedNotes.length > 0) {
+    storedNotes.forEach(noteText => {
+      const note = document.createElement('div');
+      note.classList.add('note');
+
+      const noteContent = document.createElement('span');
+      noteContent.textContent = noteText;
+
+      const deleteBtn = document.createElement('button');
+      deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+      deleteBtn.classList.add('delete-btn');
+      deleteBtn.onclick = function () {
+        notesContainer.removeChild(note);
+        updateLocalStorage();
+      };
+
+      note.appendChild(noteContent);
+      note.appendChild(deleteBtn);
+      notesContainer.insertBefore(note, notesContainer.firstChild);
+
+      let tiempo;
+      note.addEventListener("touchstart", function(event) {
+        tiempo = setTimeout(function() {
+          const texto = noteText;
+          navigator.vibrate(50);
+          navigator.clipboard.writeText(texto)
+            .then(() => alert("¡Texto copiado!"))
+            .catch(err => console.error('Error al copiar: ', err));
+        }, 2000);
+      });
+
+      note.addEventListener("touchend", function(event) {
+        clearTimeout(tiempo);
+      });
+    });
+  }
+});
+</script>
 </body>
 	</html>
-							 
+	  
