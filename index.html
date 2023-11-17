@@ -1,220 +1,217 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
     body {
-    padding: 0;
-    margin: 0;
-    
-    
-    background: linear-gradient(190deg, #bfaf48, #c62c4b);
-    animation: gradientAnimation 15s ease infinite alternate ;
-    background-attachment: fixed;
- background-repeat: no-repeat;
- background-size: cover;
+      user-zoom: none;
+      user-select: none;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: linear-gradient(to bottom right, #ff7b00, #ff5e9c);
+      min-height: 100vh;
+    }
+
+    h1 {
+      color: white;
+      margin-bottom: 20px;
+      text-shadow: 2px 4px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    #noteInput {
+      padding: 10px;
+      font-size: 16px;
+      margin-bottom: 10px;
+      border: none;
+      border-radius: 5px;
+      background: rgba(255, 255, 255, 0.4);
+      backdrop-filter: blur(10px);
+      transition: background 0.3s ease, box-shadow 0.3s ease;
       
     }
 
-@keyframes gradientAnimation {
-    0% {
-        background-position: 0% 50%;
+    #noteInput:focus {
+      outline: none;
+      background: rgba(255, 255, 255, 0.6);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     }
-    100% {
-        background-position: 100% 50%;
+
+    #addBtn {
+      padding: 8px 16px;
+      font-size: 16px;
+      background-color: #ff5e9c;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transform: scale(0);
+      transition: transform 0.3s ease;
     }
-}
 
-.card {
-    width: 90vw;
-    border: none;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    
-    animation: cardAnimation 2s ease;
-}
-
-@keyframes cardAnimation {
-    0% {
-        
-        transform: translateY(-2000vh) scale(1)rotate(0deg)skewX(10deg);
+    #addBtn:hover {
+      background-color: #ff4391;
     }
-    100% {
-        opacity: 1;
-        transform: translateY(0)scale(1);
+
+    .note {
+      width: 300px;
+      padding: 10px;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.4);
+      overflow-wrap:break-word;
+      backdrop-filter: blur(10px);
+      transition: transform 1s ease;
     }
-}
 
-.card-header {
-    background: #c62c4b;
-    color: b;
-    text-align: center;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    padding: 1px 0;
-}
+    .delete-btn {
+      background: none;
+      color: black;
+      border: none;
+      border-radius: 3px;
+      padding: 4px;
+      cursor: pointer;
+      margin-left: 78vw;
+      margin-top: 4vw;
+     overflow-wrap: break-word;
+     
+      transition: background-color 0.3s ease;
+      display: block;
+    }
 
-.card-body {
-    padding: 20px;
-}
-
-label {
-    font-weight: bold;
-    transition: color 0.3s ease;
-}
-
-input[type="email"],
-input[type="password"] {
-    border-radius: 5px;
-    margin-bottom: 15px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    transition: all 0.3s ease;
-}
-
-input[type="email"]:focus,
-input[type="password"]:focus {
-    outline: none;
-    border-color: #c62c4b;
-    box-shadow: 0 0 5px rgba(198, 44, 75, 0.5);
-}
-
-button {
-    border-radius: 5px;
-    transition: all 0.3s ease;
-    background: linear-gradient(190deg,#8b2cc6,blue);
-}
-
-.btn-primary {
-    background-color: #c62c4b;
-    border-color: #c62c4b;
-}
-
-.btn-primary:hover {
-    background-color: #b0243d;
-    border-color: #b0243d;
-    transform: scale(1.05);
-}
-
-.btn-secondary {
-    background:linear-gradient(190deg,#2c6bc6,#68c62c);
-    border-color: #bfaf48;
-    color: black;
-}
-
-.btn-secondary:hover {
-    background-color: #ada138;
-    border-color: #ada138;
-    color: black;
-    transform: scale(1.05);
-}
-.caja{
-  position:fixed;
-  top: 0;
-  
-  width: 100vw;
-  background: rgba(221,221,221,0.3);
-  backdrop-filter: blur(10vw);
-  transform: translateY(1000vh);
-  height: 100vh;
-  transition: 2s;
-}
-.container{
-  transition: 2s;
-}
-</style>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-
-    <title>inicio y registro  de sesión</title>
-
-    <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-firestore.js"></script>
-    <script>
-        // Your web app's Firebase configuration
-        const firebaseConfig = {
-          apiKey: "AIzaSyAzTBEWNuK72rGl-W2zw2G2HM8WOwyJfBk",
-          authDomain: "chat-en-tiempo-real-76198.firebaseapp.com",
-          databaseURL: "https://chat-en-tiempo-real-76198-default-rtdb.firebaseio.com",
-          projectId: "chat-en-tiempo-real-76198",
-          storageBucket: "chat-en-tiempo-real-76198.appspot.com",
-          messagingSenderId: "974778158222",
-          appId: "1:974778158222:web:347ac2c067dcd177de0ddf"
-        };
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-    </script>
+    .delete-btn:hover {
+      background-color: #ff2a2a;
+    }
+   #notes-container{
+     overflow: auto;
+     width: 90vw;
+     height: 65vh;
+     background: none;
+     margin-bottom: ppx;
+   }
+  </style>
 </head>
 <body>
-    <div class="container mt-5" id="container">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">Inicio de sesión y registro</div>
-                    <div class="card-body">
-                        <form id="auth-form">
-                            <div class="form-group">
-                                <label for="inputEmail">Correo Electrónico</label>
-                                <input type="email" class="form-control" id="inputEmail" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="inputPassword">Contraseña</label>
-                                <input type="password" class="form-control" id="inputPassword" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-block">Iniciar Sesión</button>
-                            <button type="button" class="btn btn-secondary btn-block mt-3" id="btnSignUp">Registrarse</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-<header class="caja"id="caja">
-  registrado correctamente 
-</header>
-    <script>
-        const authForm = document.querySelector('#auth-form');
-        const btnSignUp = document.querySelector('#btnSignUp');
-let caja = document.getElementById("caja");
-let container = document.getElementById("container");
-        // SignUp Event Listener
-        btnSignUp.addEventListener('click', async () => {
-            const email = document.querySelector('#inputEmail').value;
-            const password = document.querySelector('#inputPassword').value;
+  <h1>Block de Notas</h1>
+  <input type="text" oninput="addNote()" id="noteInput" placeholder="Escribe una nota">
+  <button id="addBtn" onclick="enviar()">Agregar <i class="fas fa-plus"></i></button>
 
-            try {
-                await firebase.auth().createUserWithEmailAndPassword(email, password);
-                
-                
-                
-                caja.style.transform = "translateY(0vh)"
-                container.style.transform = "scale(0)"
-            } catch (error) {
-                console.error(error);
-            }
+  <div id="notes-container"></div>
+
+  <script>
+  const boton = document.getElementById("addBtn")
+    function addNote() {
+      const noteInput = document.getElementById('noteInput');
+      ;
+      if (noteInput.value.trim() === "") {
+        boton.style.transform = "scale(0)";
+      } else {
+        boton.style.transform = "scale(1)";
+      }
+    }
+
+    function enviar() {
+      const noteInput = document.getElementById('noteInput');
+      const notesContainer = document.getElementById('notes-container');
+      const noteText = noteInput.value;
+
+      if (noteText.trim() !== "") {
+        const note = document.createElement('div');
+        note.classList.add('note');
+
+        const noteContent = document.createElement('span');
+        noteContent.textContent = noteText;
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+        deleteBtn.classList.add('delete-btn');
+        deleteBtn.onclick = function () {
+          notesContainer.removeChild(note);
+          updateLocalStorage();
+        };
+
+        note.appendChild(noteContent);
+        note.appendChild(deleteBtn);
+        
+        // Inserta la nueva nota al principio del contenedor
+        if (notesContainer.firstChild) {
+          notesContainer.insertBefore(note, notesContainer.firstChild);
+        } else {
+          notesContainer.appendChild(note);
+        }
+
+        noteInput.value = '';
+boton.style.transform = "scale(0)";
+        updateLocalStorage();
+        
+var tiempo;
+
+note.addEventListener("touchstart", function(event) {
+  
+  tiempo = setTimeout(function() {
+    const texto = noteText;
+    navigator.vibrate(50)
+    // Puedes cambiar este texto por el que necesites
+  navigator.clipboard.writeText(texto)
+    .then(() => alert("¡Texto copiado!"))
+    .catch(err => console.error('Error al copiar: ', err));
+
+
+
+
+  }, 2000); // 2000 milisegundos = 2 segundos
+});
+
+note.addEventListener("touchend", function(event) {
+  clearTimeout(tiempo);
+});
+
+        
+      } else {
+        console.log('Por favor, escribe una nota');
+      }
+    }
+
+    function updateLocalStorage() {
+      const notes = document.querySelectorAll('.note span');
+      const notesText = [];
+      notes.forEach(note => {
+        notesText.push(note.textContent);
+      });
+      localStorage.setItem('notes', JSON.stringify(notesText));
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      const notesContainer = document.getElementById('notes-container');
+      const storedNotes = JSON.parse(localStorage.getItem('notes'));
+
+      if (storedNotes && storedNotes.length > 0) {
+        storedNotes.forEach(noteText => {
+          const note = document.createElement('div');
+          note.classList.add('note');
+
+          const noteContent = document.createElement('span');
+          noteContent.textContent = noteText;
+
+          const deleteBtn = document.createElement('button');
+          deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+          deleteBtn.classList.add('delete-btn');
+          deleteBtn.onclick = function () {
+            notesContainer.removeChild(note);
+            updateLocalStorage();
+          };
+
+          note.appendChild(noteContent);
+          note.appendChild(deleteBtn);
+          notesContainer.appendChild(note);
         });
-
-        // SignIn Event Listener
-        authForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.querySelector('#inputEmail').value;
-            const password = document.querySelector('#inputPassword').value;
-
-            try {
-                await firebase.auth().signInWithEmailAndPassword(email, password);
-                caja.style.transform = "translateY(0)"
-                container.style.transform = "scale(0)"
-                // Aquí puedes redirigir a la página del chat o realizar alguna otra acción
-            } catch (error) {
-                console.error(error);
-            }
-        });
-    </script>
+      }
+    });
+  </script>
 </body>
 	</html>
-	
+							 
