@@ -1,225 +1,77 @@
 <!DOCTYPE html>
-<html>
-<html lang="en">
+<html lang="es">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">  
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navegador Web</title>
     <style>
-    body {
-      user-zoom: none;
-      user-select: none;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background: linear-gradient(to bottom right, #ff7b00, #ff5e9c);
-      min-height: 100vh;
-    }
+        body {
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+        }
 
-    h1 {
-      color: white;
-      margin-bottom: 20px;
-      text-shadow: 2px 4px 4px rgba(0, 0, 0, 0.3);
-    }
+        iframe {
+            width: 100vw;
+            height: 100vh;
+            border: none;
+        }
 
-    #noteInput {
-      padding: 10px;
-      font-size: 16px;
-      margin-bottom: 10px;
-      border: none;
-      border-radius: 5px;
-      background: rgba(255, 255, 255, 0.4);
-      backdrop-filter: blur(10px);
-      transition: background 0.3s ease, box-shadow 0.3s ease;
-      
-    }
+        input {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
 
-    #noteInput:focus {
-      outline: none;
-      background: rgba(255, 255, 255, 0.6);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    }
+        #resultado {
+            color: green;
+        }
 
-    #addBtn {
-      padding: 8px 16px;
-      font-size: 16px;
-      background-color: #ff5e9c;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transform: scale(0);
-      transition: transform 0.3s ease;
-    }
-
-    #addBtn:hover {
-      background-color: #ff4391;
-    }
-
-    .note {
-      width: 300px;
-      padding: 10px;
-      margin-top: 20px;
-      margin-bottom: 20px;
-      border-radius: 10px;
-      background: rgba(255, 255, 255, 0.4);
-      overflow-wrap:break-word;
-      backdrop-filter: blur(10px);
-      transition: transform 1s ease;
-    }
-
-    .delete-btn {
-      background: none;
-      color: black;
-      border: none;
-      border-radius: 3px;
-      padding: 4px;
-      cursor: pointer;
-      margin-left: 78vw;
-      margin-top: 4vw;
-     overflow-wrap: break-word;
-     
-      transition: background-color 0.3s ease;
-      display: block;
-    }
-
-    .delete-btn:hover {
-      background-color: #ff2a2a;
-    }
-   #notes-container{
-     overflow: auto;
-     width: 90vw;
-     height: 65vh;
-     background: none;
-     margin-bottom: ppx;
-   }
-   
-  </style>
+        #error {
+            color: red;
+        }
+    </style>
 </head>
 <body>
-  <h1>Block de Notas</h1>
-  <input type="text" oninput="addNote()" id="noteInput" placeholder="Escribe una nota">
-  <button id="addBtn" onclick="enviar()">Agregar <i class="fas fa-plus"></i></button>
 
-  <div id="notes-container"></div>
-  
+<input type="text" id="navegador" placeholder="Ingresa la URL y presiona Enter" onkeydown="handleKeyDown(event)">
+<div id="resultado"></div>
+<div id="error"></div>
 
-  <script>
-    const boton = document.getElementById("addBtn");
-let textocopiado = document.getElementById('textocopiado');
+<script>
+    const mostrarNavegador = () => {
+        let navegador = document.getElementById("navegador").value;
+        let resultado = document.getElementById("resultado");
+        let error = document.getElementById("error");
 
-function addNote() {
-  const noteInput = document.getElementById('noteInput');
-  if (noteInput.value.trim() === "") {
-    boton.style.transform = "scale(0)";
-  } else {
-    boton.style.transform = "scale(1)";
-  }
-}
-
-function addCopyListeners() {
-  const notes = document.querySelectorAll('.note');
-  notes.forEach(note => {
-    let tiempo;
-    note.addEventListener("touchstart", function(event) {
-      tiempo = setTimeout(function() {
-        const texto = note.querySelector('span').textContent;
-        navigator.vibrate(50);
-        navigator.clipboard.writeText(texto)
-          .then(() => console.log("Texto copiado al portapapeles"))
-          .catch(err => console.error('Error al copiar: ', err));
-      }, 2000);
-    });
-
-    note.addEventListener("touchend", function(event) {
-      clearTimeout(tiempo);
-    });
-  });
-}
-
-function enviar() {
-  const noteInput = document.getElementById('noteInput');
-  const notesContainer = document.getElementById('notes-container');
-  const noteText = noteInput.value;
-
-  if (noteText.trim() !== "") {
-    const note = document.createElement('div');
-    note.classList.add('note');
-
-    const noteContent = document.createElement('span');
-    noteContent.textContent = noteText;
-
-    const deleteBtn = document.createElement('button');
-    deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
-    deleteBtn.classList.add('delete-btn');
-    deleteBtn.onclick = function () {
-      notesContainer.removeChild(note);
-      updateLocalStorage();
-    };
-
-    note.appendChild(noteContent);
-    note.appendChild(deleteBtn);
-
-    if (notesContainer.firstChild) {
-      notesContainer.insertBefore(note, notesContainer.firstChild);
-    } else {
-      notesContainer.appendChild(note);
+        // Verificar si la URL es válida
+        if (isValidURL(navegador)) {
+            resultado.innerHTML = `<iframe src="${navegador}"></iframe>`;
+            error.innerHTML = ""; // Limpiar el mensaje de error si estaba presente
+        } else {
+            resultado.innerHTML = "";
+            error.innerHTML = "Esta página no se puede visualizar. Ingresa una URL válida.";
+        }
     }
 
-    noteInput.value = '';
-    boton.style.transform = "scale(0)";
-    updateLocalStorage();
+    const handleKeyDown = (event) => {
+        if (event.key === "Enter") {
+            mostrarNavegador();
+            event.preventDefault();
+        }
+    }
 
-    addCopyListeners(); // Volvemos a establecer los event listeners para copiar después de agregar una nueva nota
+    const isValidURL = (url) => {
+        try {
+            new URL(url);
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
+</script>
 
-  } else {
-    console.log('Por favor, escribe una nota');
-  }
-}
-
-function updateLocalStorage() {
-  const notes = document.querySelectorAll('.note span');
-  const notesText = [];
-  notes.forEach(note => {
-    notesText.push(note.textContent);
-  });
-  localStorage.setItem('notes', JSON.stringify(notesText));
-}
-
-document.addEventListener("DOMContentLoaded", function() {
-  const notesContainer = document.getElementById('notes-container');
-  const storedNotes = JSON.parse(localStorage.getItem('notes'));
-
-  if (storedNotes && storedNotes.length > 0) {
-    storedNotes.reverse().forEach(noteText => {
-      const note = document.createElement('div');
-      note.classList.add('note');
-
-      const noteContent = document.createElement('span');
-      noteContent.textContent = noteText;
-
-      const deleteBtn = document.createElement('button');
-      deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
-      deleteBtn.classList.add('delete-btn');
-      deleteBtn.onclick = function () {
-        notesContainer.removeChild(note);
-        updateLocalStorage();
-      };
-
-      note.appendChild(noteContent);
-      note.appendChild(deleteBtn);
-
-      notesContainer.insertBefore(note, notesContainer.firstChild);
-    });
-
-    addCopyListeners(); // Establecemos los event listeners para copiar después de cargar las notas
-  }
-});
-
-    
-  </script>
 </body>
-	</html>
-	
+</html>
