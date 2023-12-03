@@ -1,77 +1,186 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Navegador Web</title>
-    <style>
-        body {
-            padding: 0;
-            margin: 0;
-            overflow: hidden;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <link rel="icon" href="Ruizip.png">
+  <title>TraducText</title>
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(to right, #1a1a2e, #233142);
+      color: #c0c5ce;
+      margin: 0;
+      padding: 0;
+     
+    }
 
-        iframe {
-            width: 100vw;
-            height: 100vh;
-            border: none;
-        }
+    h1 {
+      font-size: 2.5em;
+      color: #45a049;
+    }
 
-        input {
-            width: 100%;
-            padding: 10px;
-            box-sizing: border-box;
-            font-size: 16px;
-            margin-bottom: 10px;
-        }
 
-        #resultado {
-            color: green;
-        }
 
-        #error {
-            color: red;
-        }
-    </style>
+    .button {
+      
+      font-size: 20px;
+      background:none;
+      color: #fff;
+      border: none;
+      margin: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .button:hover {
+      background:none;
+    }
+
+    #textToEmojiSection,
+    #emojiToTextSection {
+      display: none;
+      text-align: center;
+    }
+
+    input {
+      padding: 15px;
+      margin-top: 20px;
+      font-size: 1.2em;
+      border:none;
+      border-radius: 5px;
+      background-color: #1a1a2e;
+      color:cyan;
+      outline: none;
+    }
+
+    .btn {
+      width:40vw;
+      display: inline-block;
+      font-size: 1.2em;
+      background: linear-gradient(190deg,cyan,blue);
+      padding: 2vw;
+      border-radius:10vw;
+      margin: 0 4vw;
+      border-style: none;
+    }
+
+    #emojiOutput,
+    #textOutput {
+      margin-top: 20px;
+      font-size: 2em;
+    }
+
+    #emojiCopy,
+    #textCopy {
+      margin-top: 20px;
+    }
+    .button-container{
+      width:100vw;
+      background:rgba(114,114,114,0.3);
+      backdrop-filter: blur(10vw);
+      backdrop-filter: blur(10vw);
+    }
+  </style>
 </head>
 <body>
 
-<input type="text" id="navegador" placeholder="Ingresa la URL y presiona Enter" onkeydown="handleKeyDown(event)">
-<div id="resultado"></div>
-<div id="error"></div>
 
-<script>
-    const mostrarNavegador = () => {
-        let navegador = document.getElementById("navegador").value;
-        let resultado = document.getElementById("resultado");
-        let error = document.getElementById("error");
+  <div class="button-container" >
+    <button class="button" onclick="showTextToEmoji()">Texto a Emojis</button>
+    <button class="button" onclick="showEmojiToText()">Emojis a Texto</button>
+  </div>
 
-        // Verificar si la URL es válida
-        if (isValidURL(navegador)) {
-            resultado.innerHTML = `<iframe src="${navegador}"></iframe>`;
-            error.innerHTML = ""; // Limpiar el mensaje de error si estaba presente
+  <!-- Translator from text to emojis -->
+  <div id="textToEmojiSection" style="display:block;">
+    <input type="text" id="textInput" placeholder="Escribe algo...">
+
+        <div id="emojiCopy">
+              <button class="btn"onclick="translateToEmoji()">Traducir</button>
+      <button class="btn"onclick="copyToClipboard('emojiOutput')">Copiar </button>
+    </div>
+    <div id="emojiOutput"></div>
+
+  </div>
+
+  <!-- Translator from emojis to text -->
+  <div id="emojiToTextSection">
+    <input type="text" id="emojiInput" placeholder="Pega tus emojis...">
+
+        <div id="textCopy">
+              <button class="btn"onclick="translateToText()">Traducir</button>
+      <button class="btn"onclick="copyToClipboard('textOutput')">Copiar </button>
+    </div>
+    <div id="textOutput"></div>
+
+  </div>
+
+    <script>
+    function showTextToEmoji() {
+      document.getElementById('textToEmojiSection').style.display = 'block';
+      document.getElementById('emojiToTextSection').style.display = 'none';
+    }
+
+    function showEmojiToText() {
+      document.getElementById('textToEmojiSection').style.display = 'none';
+      document.getElementById('emojiToTextSection').style.display = 'block';
+    }
+
+    const emojiMap = {
+      'a': '😊', 'b': '😃', 'c': '😁', 'd': '😎', 'e': '😍',
+      'f': '🥳', 'g': '😇', 'h': '😜', 'i': '🤓', 'j': '🤩',
+      'k': '😋', 'l': '😏', 'm': '😂', 'n': '🤔', 'o': '😅',
+      'p': '😄', 'q': '😆', 'r': '🙃', 's': '😉', 't': '😌',
+      'u': '😁', 'v': '😝', 'w': '🤗', 'x': '🤠', 'y': '😛',
+      'z': '😖',
+      ' ': ' ' // Add space mapping
+    };
+
+    function translateToEmoji() {
+      const inputText = document.getElementById('textInput').value.toLowerCase();
+      const emojiOutput = document.getElementById('emojiOutput');
+
+      let translatedText = '';
+      for (const char of inputText) {
+        if (char in emojiMap) {
+          translatedText += emojiMap[char];
         } else {
-            resultado.innerHTML = "";
-            error.innerHTML = "Esta página no se puede visualizar. Ingresa una URL válida.";
+          translatedText += char;
         }
+      }
+
+      emojiOutput.innerHTML = translatedText;
     }
 
-    const handleKeyDown = (event) => {
-        if (event.key === "Enter") {
-            mostrarNavegador();
-            event.preventDefault();
+    function translateToText() {
+      const emojiInput = document.getElementById('emojiInput').value;
+      const textOutput = document.getElementById('textOutput');
+
+      let translatedText = '';
+      for (const emoji of emojiInput) {
+        for (const key in emojiMap) {
+          if (emojiMap[key] === emoji) {
+            translatedText += key;
+          }
         }
+      }
+
+      textOutput.innerHTML = translatedText;
     }
 
-    const isValidURL = (url) => {
-        try {
-            new URL(url);
-            return true;
-        } catch (error) {
-            return false;
-        }
+    function copyToClipboard(elementId) {
+      const outputElement = document.getElementById(elementId);
+      const textarea = document.createElement('textarea');
+      textarea.value = outputElement.innerText;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      alert('Texto copiado al portapapeles');
     }
-</script>
-
+  </script>
 </body>
-</html>
+    </html>
+    
